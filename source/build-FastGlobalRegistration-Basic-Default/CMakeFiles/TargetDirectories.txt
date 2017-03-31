@@ -1,0 +1,4 @@
+/home/julia/Desktop/my_programs/FastGlobalRegistration/source/build-FastGlobalRegistration-Basic-Default/CMakeFiles/edit_cache.dir
+/home/julia/Desktop/my_programs/FastGlobalRegistration/source/build-FastGlobalRegistration-Basic-Default/CMakeFiles/rebuild_cache.dir
+/home/julia/Desktop/my_programs/FastGlobalRegistration/source/build-FastGlobalRegistration-Basic-Default/CMakeFiles/FastGlobalRegistration.dir
+/home/julia/Desktop/my_programs/FastGlobalRegistration/source/build-FastGlobalRegistration-Basic-Default/CMakeFiles/FastGlobalRegistrationLib.dir

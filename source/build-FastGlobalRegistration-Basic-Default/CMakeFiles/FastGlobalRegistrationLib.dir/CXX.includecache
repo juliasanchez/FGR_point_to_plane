@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/julia/Desktop/my_programs/FastGlobalRegistration/source/FastGlobalRegistration/app.cpp
+app.h
+/home/julia/Desktop/my_programs/FastGlobalRegistration/source/FastGlobalRegistration/app.h
+
+/home/julia/Desktop/my_programs/FastGlobalRegistration/source/FastGlobalRegistration/app.h
+vector
+-
+flann/flann.hpp
+-
+Eigen/Core
+-
+Eigen/Geometry
+-
+

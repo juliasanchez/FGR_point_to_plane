@@ -1,0 +1,2 @@
+/usr/bin/ar qc libFastGlobalRegistrationLib.a  CMakeFiles/FastGlobalRegistrationLib.dir/app.cpp.o
+/usr/bin/ranlib libFastGlobalRegistrationLib.a
