@@ -38,12 +38,11 @@
 //#define USE_ABSOLUTE_SCALE	1		// Measure distance in absolute scale (1) or in scale relative to the diameter of the model (0)
 //#define ITERATION_NUMBER	1000		// Maximum number of iteration
 //#define TUPLE_SCALE			0.95	// Similarity measure used for tuples of feature points.
-//#define TUPLE_MAX_CNT		50000	// Maximum tuple numbers.
 #define DIV_FACTOR			1.2		// Division factor used for graduated non-convexity
 #define USE_ABSOLUTE_SCALE	1		// Measure distance in absolute scale (1) or in scale relative to the diameter of the model (0)
 #define ITERATION_NUMBER	500		// Maximum number of iteration
-#define TUPLE_SCALE			0.95	// Similarity measure used for tuples of feature points.
-#define TUPLE_MAX_CNT		10000	// Maximum tuple numbers.
+#define TUPLE_SCALE			0.96	// Similarity measure used for tuples of feature points.
+#define CORRES                  150000000            //number of trials to select tuples
 
 
 using namespace Eigen;

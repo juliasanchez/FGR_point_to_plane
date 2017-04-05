@@ -45,7 +45,8 @@ void CApp::LoadFeature(const Points& pts, const Feature& feat)
 
 void CApp::ReadFeature(const char* filepath, Points& pts, Feature& feat)
 {
-	printf("ReadFeature ... ");
+        std::cout<<"Reading points and features"<<std::endl;
+        std::cout<<"filepath : "<<filepath<<std::endl<<std::endl;
 	FILE* fid = fopen(filepath, "rb");
 	int nvertex;
 	fread(&nvertex, sizeof(int), 1, fid);
@@ -65,12 +66,12 @@ void CApp::ReadFeature(const char* filepath, Points& pts, Feature& feat)
 		feat.push_back(feat_v);
 	}
 	fclose(fid);
-	printf("done.\n");
 }
 
 void CApp::ReadNormals(const char* filepath)
 {
-    printf("ReadNormals ... ");
+    std::cout<<"Reading normals"<<std::endl<<std::endl;
+    std::cout<<"filepath : "<<filepath<<std::endl<<std::endl;
 
     ifstream fin;
     fin.open (filepath, ifstream::in);
@@ -102,8 +103,6 @@ void CApp::ReadNormals(const char* filepath)
    {
            cout << "Error opening file";
    }
-
-   printf("done.\n");
 }
 
 void CApp::SearchFLANNTree(flann::Index<flann::L2<float>>* index,
@@ -134,7 +133,7 @@ void CApp::AdvancedMatching()
 	int fi = 0;
 	int fj = 1;
 
-	printf("Advanced matching : [%d - %d]\n", fi, fj);
+        std::cout<<"REGISTRATION"<<std::endl<<std::endl;
 
 	int nPti = pointcloud_[fi].size();
 	int nPtj = pointcloud_[fj].size();
@@ -217,7 +216,7 @@ void CApp::AdvancedMatching()
 	for (int j = 0; j < ncorres_ji; ++j)
 		corres.push_back(std::pair<int, int>(corres_ji[j].first, corres_ji[j].second));
 
-	printf("points are remained : %d\n", (int)corres.size());
+        std::cout<<"correspondences number before filtering : "<<corres.size()<<std::endl;
 
 	///////////////////////////
 	/// CROSS CHECK
@@ -226,9 +225,6 @@ void CApp::AdvancedMatching()
 	///////////////////////////
 	if (crosscheck)
 	{
-		printf("\t[cross check] ");
-
-		// build data structure for cross check
 		corres.clear();
 		corres_cross.clear();
 		std::vector<std::vector<int>> Mi(nPti);
@@ -264,7 +260,7 @@ void CApp::AdvancedMatching()
 				}
 			}
 		}
-		printf("points are remained : %d\n", (int)corres.size());
+                std::cout<<"correspondences number after cross check : "<<corres.size()<<std::endl;
 	}
 
 	///////////////////////////
@@ -275,18 +271,14 @@ void CApp::AdvancedMatching()
 	if (tuple)
 	{
 		srand(time(NULL));
-
-		printf("\t[tuple constraint] ");
 		int rand0, rand1, rand2;
 		int idi0, idi1, idi2;
 		int idj0, idj1, idj2;
 		float scale = TUPLE_SCALE;
 		int ncorr = corres.size();
-		int number_of_trial = ncorr * 100;
 		std::vector<std::pair<int, int>> corres_tuple;
-                int i=0;
 		int cnt = 0;
-                while (cnt<10000)
+                while (cnt<CORRES)
 		{
 			rand0 = rand() % ncorr;
 			rand1 = rand() % ncorr;
@@ -317,26 +309,34 @@ void CApp::AdvancedMatching()
 			float lj1 = (ptj1 - ptj2).norm();
 			float lj2 = (ptj2 - ptj0).norm();
 
-			if ((li0 * scale < lj0) && (lj0 < li0 / scale) &&
-				(li1 * scale < lj1) && (lj1 < li1 / scale) &&
-				(li2 * scale < lj2) && (lj2 < li2 / scale))
-			{
-				corres_tuple.push_back(std::pair<int, int>(idi0, idj0));
-				corres_tuple.push_back(std::pair<int, int>(idi1, idj1));
-				corres_tuple.push_back(std::pair<int, int>(idi2, idj2));
-				cnt++;
-			}
-                        i++;
+                        if ((li0 * scale < lj0) && (lj0 < li0 / scale) &&
+                                (li1 * scale < lj1) && (lj1 < li1 / scale) &&
+                                (li2 * scale < lj2) && (lj2 < li2 / scale))
+                        {
+                                std::vector<std::pair<int, int>>::iterator it;
+                                it = find (corres_tuple.begin(), corres_tuple.end(), std::pair<int, int>(idi0, idj0));
+                                if (it == corres_tuple.end())
+                                    corres_tuple.push_back(std::pair<int, int>(idi0, idj0));
+                                it = find (corres_tuple.begin(), corres_tuple.end(), std::pair<int, int>(idi1, idj1));
+                                if (it == corres_tuple.end())
+                                    corres_tuple.push_back(std::pair<int, int>(idi1, idj1));
+                                it = find (corres_tuple.begin(), corres_tuple.end(), std::pair<int, int>(idi2, idj2));
+                                if (it == corres_tuple.end())
+                                    corres_tuple.push_back(std::pair<int, int>(idi2, idj2));
+                        }
+                        cnt++;
+
 		}
 
-		printf("%d tuples (%d trial, %d actual).\n", cnt, number_of_trial, i);
-		corres.clear();
+                std::cout<<"correspondences number after tuple constraint : "<<corres_tuple.size()<<std::endl;
+
+                corres.clear();
 
 		for (int i = 0; i < corres_tuple.size(); ++i)
 			corres.push_back(std::pair<int, int>(corres_tuple[i].first, corres_tuple[i].second));
 	}
 
-	printf("\t[final] matches %d.\n", (int)corres.size());
+        std::cout<<"final correspondences number : "<<corres.size()<<std::endl;
 	corres_ = corres;
 }
 
@@ -366,8 +366,6 @@ void CApp::NormalizePoints()
 		mean = mean / npti;
 		Means.push_back(mean);
 
-		printf("normalize points :: mean[%d] = [%f %f %f]\n", i, mean(0), mean(1), mean(2));
-
 		for (int ii = 0; ii < npti; ++ii)
 		{
 			pointcloud_[i][ii](0) -= mean(0);
@@ -396,7 +394,6 @@ void CApp::NormalizePoints()
 		GlobalScale = scale; // second choice: we keep the maximum scale.
 		StartScale = 1.0f;
 	}
-	printf("normalize points :: global scale : %f\n", GlobalScale);
 
 	for (int i = 0; i < num; ++i)
 	{
@@ -412,8 +409,10 @@ void CApp::NormalizePoints()
 
 double CApp::OptimizePairwise(bool decrease_mu_, int numIter_)
 {
-	printf("Pairwise rigid pose optimization\n");
 
+        std::cout<<std::endl;
+        std::cout<< "normals number :"<<normals.size()<<std::endl;
+        std::cout<< "target points number :"<<pointcloud_[0].size()<<std::endl<<std::endl;
 	double par;
 	int numIter = numIter_;
 	TransOutput_ = Eigen::Matrix4f::Identity();
